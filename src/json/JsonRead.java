@@ -33,7 +33,7 @@ public class JsonRead {
         JSONArray state_wise_array = (JSONArray) covid_json.get("statewise");
         System.out.println(state_wise_array.size());
         printStateData(state_wise_array);
-
+        System.out.println("i am dumb\n");
 
     }
 }
