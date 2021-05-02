@@ -10,6 +10,18 @@ import java.net.URLConnection;
 
 
 public class JsonRead {
+
+    static void printStateData(JSONArray obj){
+        for (Object o : obj) {
+            JSONObject state = (JSONObject)o;
+            System.out.println("Active: " + state.get("active"));
+            System.out.println("Confirmed: " + state.get("confirmed"));
+            System.out.println("Deaths: " + state.get("deaths"));
+            System.out.println("State: " + state.get("state"));
+            System.out.println("=================");
+        }
+    }
+
     public static void main(String[] args) throws IOException, ParseException {
         JSONParser jsonparser = new JSONParser();
         URL covid = new URL("https://api.covid19india.org/data.json");
@@ -20,14 +32,8 @@ public class JsonRead {
 
         JSONArray state_wise_array = (JSONArray) covid_json.get("statewise");
         System.out.println(state_wise_array.size());
-        for (Object o : state_wise_array) {
-            JSONObject state = (JSONObject)o;
-            System.out.println("Active: " + state.get("active"));
-            System.out.println("Confirmed: " + state.get("confirmed"));
-            System.out.println("Deaths: " + state.get("deaths"));
-            System.out.println("State: " + state.get("state"));
-            System.out.println("=================");
-        }
+        printStateData(state_wise_array);
+
 
     }
 }
