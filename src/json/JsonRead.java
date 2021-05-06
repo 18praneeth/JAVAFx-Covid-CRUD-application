@@ -1,16 +1,14 @@
-
-
 package json;
 
-        import org.json.simple.JSONArray;
-        import org.json.simple.JSONObject;
-        import org.json.simple.parser.JSONParser;
-        import org.json.simple.parser.ParseException;
-        import java.io.*;
-        import java.net.URL;
-        import java.text.SimpleDateFormat;
-        import java.net.URLConnection;
-        import java.util.Date;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import java.io.*;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.net.URLConnection;
+import java.util.Date;
 
 public class JsonRead {
 
@@ -29,7 +27,7 @@ public class JsonRead {
             Date d1 = sdformat.parse("2021-04-01");
             for(Object o :obj1){
                 JSONObject daily = (JSONObject)o;
-               // Date d2= (Date) daily.get("dateymd");
+                Date d2= sdformat.parse((String) daily.get("dateymd")) ;
                 System.out.println("Date" + d2);
                if(d2.compareTo(d1)>0) {
                    // JSONObject daily = (JSONObject)o;
