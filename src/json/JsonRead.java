@@ -28,8 +28,8 @@ public class JsonRead {
             for(Object o :obj1){
                 JSONObject daily = (JSONObject)o;
                 Date d2= sdformat.parse((String) daily.get("dateymd")) ;
-                System.out.println("Date" + d2);
-               if(d2.compareTo(d1)>0) {
+              //  System.out.println("Date" + d2);
+               if(d2.compareTo(d1)>=0) {
                    // JSONObject daily = (JSONObject)o;
                    System.out.println("Date" + daily.get("date"));
                    System.out.println("Number of deceased" + daily.get("totaldeceased"));
