@@ -41,9 +41,13 @@ public class JsonRead {
         {
             SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yyyy");
             Date d1 = sdformat.parse("17/01/2021");
+
             for(Object o :obj1) {
                 JSONObject daily = (JSONObject) o;
+               String d= (String) daily.get("testedasof");
                 Date d2 = sdformat.parse((String) daily.get("testedasof"));
+                if(d.equalsIgnoreCase(" "))
+                    continue;
                 //  System.out.println("Date" + d2);
                 if (d2.compareTo(d1) >= 0) {
                     // JSONObject daily = (JSONObject)o;
