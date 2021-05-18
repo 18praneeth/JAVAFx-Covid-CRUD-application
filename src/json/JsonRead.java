@@ -28,8 +28,8 @@ public class JsonRead {
             for(Object o :obj1){
                 JSONObject daily = (JSONObject)o;
                 Date d2= sdformat.parse((String) daily.get("dateymd")) ;
-                System.out.println("Date" + d2);
-               if(d2.compareTo(d1)>0) {
+              //  System.out.println("Date" + d2);
+               if(d2.compareTo(d1)>=0) {
                    // JSONObject daily = (JSONObject)o;
                    System.out.println("Date" + daily.get("date"));
                    System.out.println("Number of deceased" + daily.get("totaldeceased"));
@@ -37,7 +37,20 @@ public class JsonRead {
                }
             }
         }
-
+        static void printVaccineData(JSONArray obj1) throws java.text.ParseException
+        {
+            SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yyyy");
+            Date d1 = sdformat.parse("17/01/2021");
+            for(Object o :obj1) {
+                JSONObject daily = (JSONObject) o;
+                Date d2 = sdformat.parse((String) daily.get("testedasof"));
+                //  System.out.println("Date" + d2);
+                if (d2.compareTo(d1) >= 0) {
+                    // JSONObject daily = (JSONObject)o;
+                    System.out.println("Date" + daily.get("date"));
+                    System.out.println("Number of people vaccinated" + daily.get("totalindividualsvaccinated"));
+                }
+            }}
 
     public static void main(String[] args) throws IOException, ParseException, java.text.ParseException {
         JSONParser jsonparser = new JSONParser();
@@ -49,11 +62,12 @@ public class JsonRead {
 
         JSONArray state_wise_array = (JSONArray) covid_json.get("statewise");
         JSONArray daily_cases_array=(JSONArray) covid_json.get("cases_time_series");
-        System.out.println(state_wise_array.size());
+        JSONArray vaccine_cases_array=(JSONArray) covid_json.get("tested");
+            System.out.println(state_wise_array.size());
         printStateData(state_wise_array);
+        System.out.println("====================================================");
         printDailyData(daily_cases_array);
-        System.out.println("i am dumb\n");
-        System.out.println("hi");
+        printVaccineData(vaccine_cases_array);
 
     }
 }
