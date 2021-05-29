@@ -37,16 +37,16 @@ public class Main extends Application{
 
         Chart chart = new Chart();
 
-        FlowGridPane pane = new FlowGridPane(8, 6, chart.chartCreate());
+        FlowGridPane pane = new FlowGridPane(2, 1, chart.chartCreate()[0], chart.chartCreate()[1], chart.chartCreate()[2], chart.chartCreate()[3]);
         pane.setHgap(5);
         pane.setVgap(5);
         pane.setAlignment(Pos.CENTER);
         pane.setCenterShape(true);
         pane.setPadding(new Insets(5));
-        //pane.setPrefSize(800, 600);
+        pane.setPrefSize(800, 600);
         pane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
 
-        Scene scene = new Scene(pane, 500, 500);
+        Scene scene = new Scene(pane, 1000, 500);
         primaryStage.setTitle("Line Chart");
         primaryStage.setScene(scene);
         primaryStage.show();
