@@ -21,57 +21,106 @@ import java.util.Date;
 
 public class Chart {
 
-    private static final double TILE_WIDTH  = 500;
+    private static final double TILE_WIDTH  = 3000;
     private static final double TILE_HEIGHT = 500;
 
-    static void getCovidData(XYChart.Series series) throws IOException, ParseException, java.text.ParseException{
+    static JSONObject conn() throws IOException, ParseException{
         JSONParser jsonparser = new JSONParser();
         URL covid = new URL("https://api.covid19india.org/data.json");
         URLConnection cc = covid.openConnection();
         BufferedReader reader = new BufferedReader((new InputStreamReader(cc.getInputStream())));
         Object obj = jsonparser.parse(reader);
         JSONObject covid_json = (JSONObject) obj;
-        JSONArray daily_cases_array = (JSONArray) covid_json.get("cases_time_series");
+        return covid_json;
+    }
 
-        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
-        Date d1 = sdformat.parse("2020-10-01");
+    static void daily_confirmed(XYChart.Series daily_confirmed, XYChart.Series daily_deceased, XYChart.Series daily_recovered) throws java.text.ParseException, IOException, ParseException {
+
+        JSONArray daily_cases_array = (JSONArray) conn().get("cases_time_series");
 
         for (Object o : daily_cases_array) {
             JSONObject daily = (JSONObject) o;
-            Date d2 = sdformat.parse((String) daily.get("dateymd"));
-            if (d2.compareTo(d1) >= 0) {
-                series.getData().add(new XYChart.Data((String) daily.get("dateymd"), Integer.parseInt((String) daily.get("dailyconfirmed"))));
-            }
+            daily_confirmed.getData().add(new XYChart.Data((String) daily.get("date"), Integer.parseInt((String) daily.get("dailyconfirmed"))));
+            daily_deceased.getData().add(new XYChart.Data((String) daily.get("date"), Integer.parseInt((String) daily.get("dailydeceased"))));
+            daily_recovered.getData().add(new XYChart.Data((String) daily.get("date"), Integer.parseInt((String) daily.get("dailyrecovered"))));
         }
-
     }
 
-    public Tile chartCreate() throws ParseException, java.text.ParseException, IOException {
+    static void vaccinated(XYChart.Series vaccinated_data) throws IOException, ParseException, java.text.ParseException {
+        JSONArray daily_cases_array = (JSONArray) conn().get("tested");
 
+        SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+        Date d1 = date_format.parse("16/1/2021");
+
+        for (Object o : daily_cases_array) {
+            JSONObject daily = (JSONObject) o;
+            if (daily.get("testedasof") != "") {
+                Date d2 = date_format.parse((String) daily.get("testedasof"));
+                if (d2.compareTo(d1) >= 0) {
+                    vaccinated_data.getData().add(new XYChart.Data((String) daily.get("testedasof"), Integer.parseInt((String) daily.get("totalindividualsvaccinated"))));
+                }
+            }
+        }
+    }
+
+
+    public Tile[] chartCreate() throws ParseException, java.text.ParseException, IOException {
+
+        XYChart.Series<String, Number> series1 = new XYChart.Series();
         XYChart.Series<String, Number> series2 = new XYChart.Series();
-        series2.setName("Daily Confirmed Cases");
-        getCovidData(series2);
-
         XYChart.Series<String, Number> series3 = new XYChart.Series();
-        series3.setName("Outside");
-        series3.getData().add(new XYChart.Data("MO", 8));
-        series3.getData().add(new XYChart.Data("TU", 53));
-        series3.getData().add(new XYChart.Data("WE", 4));
-        series3.getData().add(new XYChart.Data("TH", 2));
-        series3.getData().add(new XYChart.Data("FR", 4));
-        series3.getData().add(new XYChart.Data("SA", 3));
-        series3.getData().add(new XYChart.Data("SU", 5));
+        XYChart.Series<String, Number> series4 = new XYChart.Series();
+        series1.setName("Daily Confirmed Cases");
+        series2.setName("Daily Deceased Cases");
+        series3.setName("Daily Recovered Cases");
+        daily_confirmed(series1, series2, series3);
+        vaccinated(series4);
 
+        Tile[] line_chart = new Tile[4];
 
-        Tile lineChartTile = TileBuilder.create()
+        Tile daily_confirmed_case = TileBuilder.create()
                 .skinType(SkinType.SMOOTHED_CHART)
                 .prefSize(TILE_WIDTH, TILE_HEIGHT)
                 .title("Daily Confirmed Case")
                 .animated(true)
-                .smoothing(false)
+                .smoothing(true)
+                .series(series1)
+                .build();
+
+        Tile daily_deceased_case = TileBuilder.create()
+                .skinType(SkinType.SMOOTHED_CHART)
+                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Daily Deceased Case")
+                .animated(true)
+                .smoothing(true)
                 .series(series2)
                 .build();
 
-        return lineChartTile;
+
+        Tile daily_recovered_case = TileBuilder.create()
+                .skinType(SkinType.SMOOTHED_CHART)
+                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Daily Recovered Case")
+                .animated(true)
+                .smoothing(true)
+                .series(series3)
+                .build();
+
+        Tile vaccinated = TileBuilder.create()
+                .skinType(SkinType.SMOOTHED_CHART)
+                .prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Vaccinated Data")
+                .animated(true)
+                .smoothing(true)
+                .series(series4)
+                .build();
+
+
+        line_chart[0] = daily_confirmed_case;
+        line_chart[1] = daily_deceased_case;
+        line_chart[2] = daily_recovered_case;
+        line_chart[3] = vaccinated;
+
+        return line_chart;
     }
 }
