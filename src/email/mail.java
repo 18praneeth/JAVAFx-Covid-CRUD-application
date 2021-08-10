@@ -36,8 +36,8 @@ public class mail implements Runnable{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
-        final String username = "sophists.bot@gmail.com";
-        final String password = "Sophists@123";
+        final String username = "";
+        final String password = "";
 
         Properties props = new Properties();
         props.put("mail.smtp.starttls.enable", "true");
